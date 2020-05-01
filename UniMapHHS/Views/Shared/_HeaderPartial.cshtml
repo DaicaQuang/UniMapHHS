@@ -1,0 +1,115 @@
+﻿@{Dictionary<int, string> glossary = ViewBag.glossary; }
+
+<div class="header">
+    <div class="header_searchBar">
+        <input type="text" id="myInput" class="header_searchInput" onkeyup="filterSearchList()" placeholder="@glossary[4]">
+        <ul id="myUL" class="ListWithLocations">
+            @foreach (Location l in ViewBag.searchBar)
+            {
+                <li><a onclick="openLocation(@l.CategoryId, @l.LocationId);">@l.Title</a></li>
+            }
+        </ul>
+    </div>
+
+    @if (ViewBag.lang == "NL")
+    {
+        if (ViewBag.UserRole != "Guest" && ViewBag.UserRole != null)
+        {
+
+            <div class="header_login" onclick="Logout('NL')">@glossary[57]</div> }
+        else
+        {
+            <a class="header_login" asp-controller="Login" asp-action="Index" asp-route-lang="NL">@glossary[8]</a>
+        }
+    }
+    else if (ViewBag.lang == "SP")
+    {
+        if (ViewBag.UserRole != "Guest" && ViewBag.UserRole != null)
+        {
+
+            <div class="header_login" onclick="Logout('SP')">@glossary[57]</div> }
+        else
+        {
+            <a class="header_login" asp-controller="Login" asp-action="Index" asp-route-lang="SP">@glossary[8]</a>
+        }
+    }
+    else
+    {
+        if (ViewBag.UserRole != "Guest" && ViewBag.UserRole != null)
+        {
+
+            <div class="header_login" onclick="Logout('EN')">@glossary[57]</div> }
+        else
+        {
+            <a class="header_login" asp-controller="Login" asp-action="Index" asp-route-lang="EN">@glossary[8]</a>
+        }
+    }
+
+</div>
+
+<script>
+    // Logt een gebruiker uit.
+    function Logout(lang) {
+        alert("@glossary[58]");
+        window.location.href = "/Login/Logout?lang=" + lang;
+    }
+
+    // Filtert de list op basis van de zoekopdracht en werkt deze live tijdens runtime bij.
+    function filterSearchList() {
+        var input, filter, ul, li, a, i, txtValue;
+        input = document.getElementById('myInput');
+        filter = input.value.toUpperCase();
+        ul = document.getElementById("myUL");
+        li = ul.getElementsByTagName('li');
+
+        for (i = 0; i < li.length; i++) {
+            a = li[i].getElementsByTagName("a")[0];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
+            }
+        }
+    }
+
+    // Opent de searchbar list als er getypt wordt in de zoekbalk.
+    $("#myInput").keyup(function () {
+        document.getElementById("myUL").style.display = "block";
+    });
+
+    // Sluit de searchbar list als er naast de list geklikt wordt.
+    document.addEventListener("click", function (e) {
+        document.getElementById("myUL").style.display = "none";
+    });
+
+    // Opent locatie op basis van een klik op een zoekresultaat.
+    function openLocation(categoryID, locationID) {
+        if (categoryID != 0 && locationID != 0) {
+            resetOverlays();
+            overlayExtend('overlay_LocationList');
+            PassLocationList(categoryID);
+            setTimeout(function () { openLocationItem(document.getElementById("location_" + locationID)); }, 1000);
+        }
+    }
+
+    // Reset alle overlays zodat er opnieuw een zoekopdracht kan worden gevonden.
+    function resetOverlays() {
+        var list = document.getElementsByClassName('overlay_extended');
+        var icon = document.getElementById('nav-icon3');
+        var menu = document.getElementById('overlay_menu');
+        var i;
+
+        if (icon.classList.contains('open')) {
+            icon.classList.remove('open');
+        }
+
+        for (i = 0; i < list.length; i++) {
+            list[i].classList.remove('overlay_extended');
+        }
+
+        if (menu.classList.contains('overlay_extended')) {
+            menu.classList.remove('overlay_extended');
+        }
+    }
+</script>

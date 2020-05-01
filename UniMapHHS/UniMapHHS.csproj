@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <ProjectGuid>{84E5D870-F476-487A-B090-A5B5DEBCB594}</ProjectGuid>
+    <ApplicationInsightsResourceId>/subscriptions/4c75ca77-8e89-4a91-9cc0-9bc76d3a6693/resourcegroups/rg-se-vt-s6-gr2/providers/microsoft.insights/components/UniMap</ApplicationInsightsResourceId>
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20200319145054_ForeignKeyAdd.cs" />
+    <Compile Remove="Migrations\20200319145054_ForeignKeyAdd.Designer.cs" />
+    <Compile Remove="Migrations\20200326123638_FixIoT.cs" />
+    <Compile Remove="Migrations\20200326123638_FixIoT.Designer.cs" />
+    <Compile Remove="Migrations\20200326124058_Fix.cs" />
+    <Compile Remove="Migrations\20200326124058_Fix.Designer.cs" />
+    <Compile Remove="Migrations\20200326124914_Fix2.cs" />
+    <Compile Remove="Migrations\20200326124914_Fix2.Designer.cs" />
+    <Compile Remove="Migrations\20200326125041_Fix3.cs" />
+    <Compile Remove="Migrations\20200326125041_Fix3.Designer.cs" />
+    <Compile Remove="Migrations\20200326125118_FixIoT.cs" />
+    <Compile Remove="Migrations\20200326125118_FixIoT.Designer.cs" />
+    <Compile Remove="Migrations\20200326130541_FixIoT3.cs" />
+    <Compile Remove="Migrations\20200326130541_FixIoT3.Designer.cs" />
+    <Compile Remove="Migrations\20200326154617_NullableOff2.cs" />
+    <Compile Remove="Migrations\20200326154617_NullableOff2.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="linq2db" Version="2.9.7" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.12.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Shared\School_buildings\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
+  </ItemGroup>
+
+</Project>

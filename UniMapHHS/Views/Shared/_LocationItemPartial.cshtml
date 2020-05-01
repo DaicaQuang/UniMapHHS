@@ -1,0 +1,27 @@
+﻿@model UniMapHHS.Models.Location
+@{Dictionary<int, string> glossary = ViewBag.glossary; }
+
+<div class="locationItem" onclick="openLocationItem(this)">
+    <!-- sparse - crowded - dense - full -->
+    <div class="locationItem_statusBar status-sparse" onclick=""></div>
+    <div class="locationItem_containerWrap">
+        <div class="locationItem_container">
+            <div class="locationItem_titleWrap">
+                <em class="@Model.Category.Icon"></em>
+                <p>@Model.Title</p>
+            </div>
+            <em class="fas fa-chevron-down"></em>
+        </div>
+    </div>
+</div>
+<div class="panel hidden">
+    <div class="panelContent">
+        <div class="numberFavorite">
+            <div class="favoriteStar">
+                <em class="far fa-star fa-lg" onClick="favoriteRoom(this)"></em>
+            </div>
+        </div>
+        <img class="popularTimes" src="~/images/mock.png" alt="Data">
+        <div class="showMore">Show more <em class="fas fa-chevron-down"></em></div>
+    </div>
+</div>

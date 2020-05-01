@@ -1,0 +1,371 @@
+﻿
+<partial name="../Shared/_SidebarPartial.cshtml" />
+<partial name="../Shared/_MainPartial.cshtml" />
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+
+<script>
+    jQuery(document).ready(function () {
+        loadFavs();
+        jQuery("#map").draggable({
+            containment: 'parent'
+        })
+
+    });
+    function hamburgerAnimate(icon, overlay) {
+        icon.classList.toggle('open');
+        overlayExtend(overlay);
+    }
+    function overlayExtend(overlay) {
+        document.getElementById(overlay).classList.toggle('overlay_extended')
+    }
+
+    function rotateIcon(icon) {
+        icon.classList.toggle("rotate");
+    }
+
+    function selectMenuItem(menuitem) {
+        var i;
+        var list = document.getElementById("menuItemList");
+        for (i = 0; i < list.children.length; i++) {
+            if (list.children[i].classList.contains('menu_item_selected')) {
+                list.children[i].classList.toggle('menu_item_selected');
+            }
+        }
+        menuitem.classList.toggle('menu_item_selected');
+    }
+
+    function isOverflown(element) {
+        return element.scrollHeight > element.clientHeight;
+    }
+
+    function openLocationItem(item) {
+        var icon = item.children[1].children[0].children[1];
+        icon.classList.toggle("rotate");
+        if (!item.nextElementSibling.classList.contains("hidden")) {
+            item.nextElementSibling.classList.add("hidden");
+        } else {
+            var list = item.parentNode.children;
+            var i;
+            for (i = 0; i < list.length; i++) {
+                if (!list[i].classList.contains("hidden") && list[i].classList.contains("panel")) {
+                    list[i].classList.add("hidden");
+                }
+            }
+            item.nextElementSibling.classList.toggle("hidden");
+        }
+    }
+
+    function favoriteRoom(e) {
+        e.classList.toggle('far');
+        e.classList.toggle('fas');
+    }
+
+    function changeMap(destinationId, originId, buildingName) {
+        loadDropdown(buildingName, destinationId);
+        var destMap = document.getElementById(destinationId);
+        var originMap = document.getElementById(originId);
+        if (destMap != null) {
+            originMap.classList.add("hidden");
+            destMap.classList.remove("hidden");
+        } else {
+            console.log("Error");
+        }
+    }
+
+    function PassLocationList(id) {
+        $.ajax({
+            url: "/Home/FetchLocations/",
+            data: { "id": id },
+            type: "POST",
+            success: function (data) {
+                $("#testje").empty();
+                var i = 50;
+                $.each(data, function () {
+                    var lockclass = "";
+                    var l = this.lock;
+                    if (l == true) {
+                        lockclass = "fas fa-lock";
+                    }
+                    else {
+                        lockclass = "fas fa-unlock";
+                    }
+
+                    $("#testje").append(
+                        '<div id="location_'+this.id+'" class="locationItem" onclick="openLocationItem(this)">' +
+                        '<div class="locationItem_statusBar status-sparse" id="statusbar_' + i + '"></div>' +
+                        '<div class="locationItem_containerWrap">' +
+                        '<div class="locationItem_container">' +
+                        '<div class="locationItem_titleWrap">' +
+                        '<i class="' + this.ci + '"></i>' +
+                        '<p>' + this.titel + '</p>' +
+                        ' </div>' +
+                        ' <i class="fas fa-chevron-down"></i>' +
+                        ' </div>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="panel hidden">' +
+                        '<div class="panelContent">' +
+                        '<div class="numberFavorite">' +
+                        '<div>' +
+                        '<div> Activity : </div>' +
+                        '<div id="CurrentPeopleLocation">' +
+                        '<div id="CurrentAmountPeople_' + i + '"></div> / ' +
+                        '<div id="MaxAmountPeople_' + i + '"></div>' +
+                        '</div>' +
+                        '</div>' +
+                        LockFavouriteFunction(this.id, this.favloc) +
+                        LockedFunction(this.id, lockclass, i, true) +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="Analytics_Card Analytics_MediumCard Location_Chart_Canvas">' +
+                        '<div class="Analytics_Card_Chart Location_Chart">' +
+                        '<canvas id=' + i + '   width="240" height="100"></canvas>' +
+                        '</div>' +
+                        '</div>' +
+                        ShowMoreFunction(this.id) +
+                        '</div>' +
+                        '</div>'
+                    );
+
+                    GetHourlyAverageData(this.id, i);
+                    GetCurrentAmountOfPeople(this.id, i, l);
+                    i++;
+                })
+            }
+        })
+    }
+
+    function GetCurrentAmountOfPeople(input, i, l) {
+        $.ajax({
+            url: "/Analytics/GetCurrectAmountOfPeople/",
+            data: { "locationId": input },
+            type: "POST",
+            success: function (result) {
+                $("#CurrentAmountPeople_" + i).html(result);
+                GetMaxAmountOfPeople(input, i, result, l);
+            }
+        })
+    };
+
+    function GetMaxAmountOfPeople(input, i, data, l) {
+        $.ajax({
+            url: "/Analytics/GetMaxAmountOfPeople/",
+            data: { "locationId": input },
+            type: "POST",
+            success: function (result) {
+                $("#MaxAmountPeople_" + i).html(result);
+                if (!l) {
+                    var jj = 100 / (result / data);
+                    if (jj <= 25) {
+                        $("#statusbar_" + i).css("background-color", "limegreen");
+                    }
+                    if (jj > 25 && jj <= 50) {
+                        $("#statusbar_" + i).css("background-color", "yellow");
+                    }
+                    if (jj > 50 && jj <= 75) {
+                        $("#statusbar_" + i).css("background-color", "orange");
+                    }
+                    if (jj > 75 && jj <= 100) {
+                        $("#statusbar_" + i).css("background-color", "red");
+                    }
+                } else {
+                    $("#statusbar_" + i).css("background-color", "black");
+                }
+            }
+        })
+    };
+
+    function GetRole(id) {
+        if ("@ViewBag.UserRole" == "Guest") {
+            return '';
+        } else {
+            return '<div class="favoriteStar"><i class="far fa-star fa-lg" onclick="favoriteRoom(this); favLocation(' + id + ')"></i></div>';
+        }
+    }
+
+    function loadFavs() {
+            $.ajax({
+            url: "/Home/GetUserLocations/",
+            type: "POST",
+            success: function (result) {
+                $("#testje2").empty();
+                var i = 1000;
+                $.each(result, function () {
+                    var lockclass = "";
+                    var l = this.lock;
+                    if (l == true) {
+                        lockclass = "fas fa-lock";
+                    }
+                    else {
+                        lockclass = "fas fa-unlock";
+                    }
+                    $("#testje2").append(
+                        '<div class="locationItem" onclick="openLocationItem(this)">' +
+                        '<div class="locationItem_statusBar status-sparse" id="statusbar_' + i + '"></div>' +
+                        '<div class="locationItem_containerWrap">' +
+                        '<div class="locationItem_container">' +
+                        '<div class="locationItem_titleWrap">' +
+                        '<i class="' + this.ci + '"></i>' +
+                        '<p>' + this.titel + '</p>' +
+                        ' </div>' +
+                        ' <i class="fas fa-chevron-down"></i>' +
+                        ' </div>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="panel hidden">' +
+                        '<div class="panelContent">' +
+                        '<div class="numberFavorite">' +
+                        '<div>' +
+                        '<div> Activity : </div>' +
+                        '<div id="CurrentPeopleLocation">' +
+                        '<div id="CurrentAmountPeople_' + i + '"></div> / ' +
+                        '<div id="MaxAmountPeople_' + i + '"></div>' +
+                        '</div>' +
+                        '</div>' +
+                        LockFavouriteFunction(this.id, this.favloc) +
+                        LockedFunction(this.id, lockclass, i, false) +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="Analytics_Card Analytics_MediumCard Location_Chart_Canvas">' +
+                        '<div class="Analytics_Card_Chart Location_Chart">' +
+                        '<canvas id=' + i + '   width="240" height="100"></canvas>' +
+                        '</div>' +
+                        '</div>' +
+                        ShowMoreFunction(this.id) +
+                        '</div>' +
+                        '</div>'
+                    );
+
+                    GetHourlyAverageData(this.id, i);
+                    GetCurrentAmountOfPeople(this.id, i, l);
+                    i++;
+                })
+                }
+            })
+        }
+
+    function GetLang() {
+        if ("@ViewBag.lang" == "NL") {
+            return '&lang=NL';
+        } else if ("@ViewBag.lang" == "SP") {
+            return '&lang=SP'
+        } else {
+            return '&lang=EN';
+        }
+    }
+
+    function ShowMoreFunction(id) {
+        if ("@ViewBag.UserRole" == "Guest" || "@ViewBag.UserRole" == "Student") {
+            return '';
+        } else {
+            return '<div><a href="Analytics/Index?id=' + id + GetLang() + '">Show more</a></div>';
+        }
+    }
+
+    function LockedFunction(id, lockclass, i, bool) {
+        if ("@ViewBag.UserRole" == "Guest" || "@ViewBag.UserRole" == "Student") {
+            return '';
+        } else {
+            if (bool) {
+                return '<a id="LockIcon_' + i + '" class="' + lockclass + '" onclick="lockLocation(' + id + ', ' + i + ', ' + true + ')" style="cursor: pointer"></a> </div>';
+            } else {
+            return '<a id="LockIcon_' + i + '" class="' + lockclass + '" onclick="lockLocation(' + id + ', ' + i + ', ' + false + ')" style="cursor: pointer"></a> </div>';
+            }
+        }
+    }
+
+    function lockLocation(id, i, lockedbool) {
+        $.ajax({
+            url: "/Home/FetchLocked/",
+            data: { "id": id },
+            type: "POST",
+            success: function (bool) {
+                if (bool) {
+                    document.getElementById("LockIcon_" + i).classList.remove("fa-unlock");
+                    document.getElementById("LockIcon_" + i).classList.add("fa-lock");
+                    $("#statusbar_" + i).css("background-color", "black");
+                    alert("Room is now closed");
+                } else {
+                    document.getElementById("LockIcon_" + i).classList.remove("fa-lock");
+                    document.getElementById("LockIcon_" + i).classList.add("fa-unlock");
+                    GetCurrentAmountOfPeople(id, i, bool);
+                    alert("Room is now open")
+                }
+                if (lockedbool) {
+                    loadFavs();
+                }
+            }
+        })
+    }
+
+        function LockFavouriteFunction(id, bool) {
+        if ("@ViewBag.UserRole" == "Guest") {
+            return '';
+        } else {
+            if (bool) {
+                return '<div class="favoriteStar"><i class="fas fa-star fa-lg" onclick="favoriteRoom(this); favLocation('+ id +')"></i>';
+            } else {
+                return '<div class="favoriteStar"><i class="far fa-star fa-lg" onclick="favoriteRoom(this); favLocation('+ id +')"></i>';
+            }            
+        }
+    }
+
+
+
+    function GetHourlyAverageData(input, i) {
+        $.ajax({
+            url: "/Analytics/GetExptectedActivity/",
+            data: { "locationId": input },
+            type: "POST",
+            success: function (result) {
+                    SetUpBigChart(result, i);
+            }
+        })
+    };
+
+    function SetUpBigChart(result, input) {
+        var ctxBig = document.getElementById(input).getContext('2d');
+        var smallChart = new Chart(ctxBig, {
+            type: 'line',
+            data: {
+                labels: ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'],
+                datasets: [{
+                    label: 'Exptected',
+                    borderColor: '#53BE2D',
+                    data: result
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        display: true,
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    };
+
+    function favLocation(id) {
+        $.ajax({
+            url: "Home/AddFavourite",
+            data: { "id" : id },
+            type: "POST",
+            success: function (result) {
+                if (result == true) {
+                    alert("Added to favourites!");
+                } else {
+                    alert("Removed from favourites!");
+                }
+                loadFavs();
+            }
+        })
+    }
+
+
+</script>

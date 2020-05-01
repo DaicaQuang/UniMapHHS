@@ -1,0 +1,14 @@
+﻿@model UniMapHHS.Models.Category
+@{Dictionary<int, string> glossary = ViewBag.glossary; }
+<!--Service desks - Libraries - Class rooms - Open Areas - Project rooms - Cafeterias-->
+<div class="locationItem" onclick="overlayExtend('overlay_LocationList'); PassLocationList(@Model.CategoryId);">
+    <div class="locationItem_containerWrap locationitem_containerCategory">
+        <div class="locationItem_container">
+            <div class="locationItem_titleWrap">
+                <em class="@Model.Icon"></em>
+                <p>@glossary[Model.Title]</p>
+            </div>
+            <em class="fas fa-chevron-right"></em>
+        </div>
+    </div>
+</div>

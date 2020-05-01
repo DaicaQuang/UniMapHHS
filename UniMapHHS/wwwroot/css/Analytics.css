@@ -1,0 +1,210 @@
+﻿:root {
+    --schoolgreen: #9ea700;
+    --whiteText: white;
+    --dropdownBackground: #fefefe;
+}
+
+.AnalyticsPage {
+    width: 100%;
+    height: 100%;
+    min-width: 1111px;
+}
+
+.Analytics_Header {
+    width: 100%;
+    height: 55.6px;
+    background-color: var(--schoolgreen);
+    color: var(--whiteText);
+    font-size: 22px;
+    display: flex;
+}
+
+.Analytics_Back {
+    width: 55.6px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .Analytics_Back i {
+        transition: 0.2s;
+    }
+
+        .Analytics_Back i:hover {
+            transform: scale(1.2);
+            cursor: pointer
+        }
+
+.Analytics_Main {
+    width: 100%;
+    height: calc(100% - 55.6px);
+    -webkit-box-shadow: inset 0px 5px 5px 0px rgba(0,0,0,0.18);
+    -moz-box-shadow: inset 0px 5px 5px 0px rgba(0,0,0,0.18);
+    box-shadow: inset 0px 5px 5px 0px rgba(0,0,0,0.18);
+    background-color: #ececec;
+}
+
+.Analytics_DropdownWrapper {
+    position: relative;
+    width: 400px;
+    height: 50%;
+    display: flex;
+    align-items: center;
+}
+
+.Analytics_Filters {
+    width: calc(100% - 55.6px);
+    height: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.Analytics_Dropdown {
+    width: calc(100% - 20px);
+    padding: 2px;
+    display: inline-block;
+    border: none;
+    height: 100%;
+}
+
+.Analytics_Dropdown_list {
+    background-color: var(--dropdownBackground);
+    border: 1px solid darkgray;
+    position: absolute;
+    width: 100%;
+    max-height: 292px;
+    overflow-y: auto;
+    top: calc(100% + -1px);
+    left: -1px;
+}
+
+.Analytics_Dropdown_item {
+    padding: 5px;
+    border-bottom: 1px solid darkgray;
+    cursor: pointer;
+    color: #3a3939;
+}
+
+    .Analytics_Dropdown_item:hover {
+        background-color: lightblue;
+    }
+
+.Analytics_DropdownWrapper i {
+    cursor: pointer;
+    width: 20px;
+    float: right;
+    height: 100%;
+    color: #373636;
+    display: flex;
+    align-items: center;
+    background-color: #d5edef;
+    border: 1px solid darkgray;
+}
+
+    .Analytics_DropdownWrapper i:hover {
+        background-color: #dfefef;
+        font-size: 23px;
+    }
+
+.Analytics_Left {
+    width: 65%;
+    display: inline-block;
+}
+
+.Analytics_Right {
+    width: 35%;
+    float: right;
+    display: inline-block;
+}
+
+.Analytics_LargeCard {
+    height: calc(100% - 60px);
+}
+
+.Analytics_MediumCard {
+    height: calc(50% - 60px);
+}
+
+
+
+.Analytics_Card {
+    width: calc(100% - 60px);
+    margin: 20px;
+    display: inline-block;
+    background-color: white;
+    -webkit-box-shadow: 0px 0px 20px 1px rgba(0,0,0,0.1);
+    -moz-box-shadow: 0px 0px 20px 1px rgba(0,0,0,0.1);
+    box-shadow: 0px 0px 20px 1px rgba(0,0,0,0.1);
+    padding: 10px;
+}
+
+.WIP {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    height:100%;
+
+}
+.Analytics_CardTitle {
+    width: 100%;
+    height: 50px;
+    font-size: 22px;
+    display: inline-block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+}
+.Analytics_Card_Chart {
+    height: calc(100% - 75px);
+    width: calc(100% - 20px);
+    display: inline-block;
+}
+
+.Analytics_Card_Num {
+    width: 80px;
+    display: inline-block;
+    font-size: 50px
+}
+
+.Analytics_Title_S {
+    width: calc(100% - 70px);
+    display: flex;
+    float: right;
+    font-size: 40px;
+    text-align: center;
+    margin: 20px;
+}
+
+.Analytics_SmallCard {
+    height: calc(25% - 60px);
+    display: flex;
+    align-items: center;
+}
+
+.favouriteStar {
+    font-size: 50px;
+    color: #f2e709;
+}
+
+.Analytics-First-Part{
+    width: 50%;
+}
+
+.Analytics-Second-Part {
+    width: 50%;
+    display: flex;
+    align-items: center;
+}
+
+.Location_Chart{
+    height: 260px !important;
+    width: 100% !important;
+}
+
+.Location_Chart_Canvas{
+    height: auto; 
+}

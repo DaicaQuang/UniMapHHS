@@ -1,0 +1,283 @@
+﻿@model Location
+@{Dictionary<int, string> glossary = ViewBag.glossary; }
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+<div class="AnalyticsPage">
+    <div class="Analytics_Header">
+        <div class="Analytics_Back">
+            @if (ViewBag.lang == "NL")
+            {
+                <a asp-controller="Home" asp-action="Index" asp-route-lang="NL"><em class="fas fa-arrow-left"></em></a>
+            }
+            else if (ViewBag.lang == "SP")
+            {
+                <a asp-controller="Home" asp-action="Index" asp-route-lang="SP"><em class="fas fa-arrow-left"></em></a>
+            }
+            else
+            {
+                <a asp-controller="Home" asp-action="Index" asp-route-lang="EN"><em class="fas fa-arrow-left"></em></a>
+            }
+        </div>
+        <div class="Analytics_Filters">
+            @if (Model != null)
+            {
+                <div class="Analytics_DropdownWrapper">
+                    <div>@glossary[30]: @Model.Title</div>
+                </div>
+                <div class="Analytics_DropdownWrapper">
+                    <div>@glossary[2]: @glossary[Model.Category.Title]</div>
+                </div>
+                <div class="Analytics_DropdownWrapper">
+                    <div>@glossary[31]: @Model.BuildingFloor.Building</div>
+                </div>
+                <div class="Analytics_DropdownWrapper">
+                    <div>@glossary[32]: @Model.BuildingFloor.Floor</div>
+                </div>
+            }
+            else
+            {
+                <div class="Analytics_DropdownWrapper">
+                    <div>@glossary[30]: -</div>
+                </div>
+                <div class="Analytics_DropdownWrapper">
+                    <div>@glossary[2]: -</div>
+                </div>
+                <div class="Analytics_DropdownWrapper">
+                    <div>@glossary[31]: -</div>
+                </div>
+                <div class="Analytics_DropdownWrapper">
+                    <div>@glossary[32]: -</div>
+                </div>
+            }
+
+        </div>
+    </div>
+    <div class="Analytics_Main">
+        @if (Model != null)
+        {
+            <div class="Analytics_Left">
+                <div class="Analytics_Card Analytics_LargeCard">
+                    <div class="Analytics_CardTitle">@glossary[33]</div>
+                    <div class="Analytics_Card_Chart">
+                        <canvas id="BigChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="Analytics_Right">
+                <div class="Analytics_Card Analytics_MediumCard">
+                    <div class="Analytics_CardTitle">@glossary[34]</div>
+                    <div class="Analytics_Card_Chart">
+                        <canvas id="SmallChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+                <div class="Analytics_Card Analytics_SmallCard">
+                    <div class="Analytics-First-Part">
+                        <div class="Analytics_CardTitle">@glossary[3]</div>
+                    </div>
+                    <div class="Analytics-Second-Part">
+                        <div class="Analytics_Title_S" id="AmountOfFavourite" style="width: auto !important"></div>
+                        <em class="fas fa-star favouriteStar"></em>
+                    </div>
+                </div>
+                <div class="Analytics_Card Analytics_SmallCard">
+                    <div class="Analytics_CardTitle">@glossary[35]</div>
+                    <div class="Analytics_Title_S">
+                        <div id="CurrentAmountPeople"></div> /
+                        <div id="MaxAmountPeople"></div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="WIP">
+                @glossary[39]
+                <div class="Analytics_Back">
+                    @if (ViewBag.lang == "NL")
+                    {
+                        <a asp-controller="Home" asp-action="Index" asp-route-lang="NL"><em class="fas fa-arrow-left"></em></a>
+                    }
+                    else if (ViewBag.lang == "SP")
+                    {
+                        <a asp-controller="Home" asp-action="Index" asp-route-lang="SP"><em class="fas fa-arrow-left"></em></a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Home" asp-action="Index" asp-route-lang="EN"><em class="fas fa-arrow-left"></em></a>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function dropdown(dd) {
+        dd.classList.remove("hidden");
+    }
+    function dropup(dd) {
+        dd.classList.add("hidden");
+    }
+    function filterFunction(input) {
+        var filter = input.value.toUpperCase();
+        var list = input.nextElementSibling.nextElementSibling.children;
+        for (i = 0; i < list.length; i++) {
+            txtValue = list[i].textContent || list[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                list[i].style.display = "";
+            } else {
+                list[i].style.display = "none";
+            }
+        }
+    }
+
+    // BigChart functions
+    function GetHourlyAverageData(input) {
+        $.ajax({
+            url: "/Analytics/GetExptectedActivity/",
+            data: { "locationId": input },
+            type: "POST",
+            success: function (result) {
+                SetUpBigChart(result);
+            }
+        })
+    };
+
+    function SetUpBigChart(result) {
+        var ctxBig = document.getElementById('BigChart').getContext('2d');
+
+        var smallChart = new Chart(ctxBig, {
+                type: 'line',
+                data: {
+                    labels: ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'],
+                    datasets: [{
+                        label: '@glossary[36]',
+                        borderColor: '#53BE2D',
+                        data: result
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+
+    };
+
+    // SmallChart functions
+    function GetCurrentMonthData(input) {
+        $.ajax({
+            url: "/Analytics/GetDataFromCurrentMonth/",
+            data: { "locationId": input },
+            type: "POST",
+            success: function (result) {
+                GetPreviousMonthData(result, input);
+            }
+        })
+    };
+
+    function GetPreviousMonthData(result, input) {
+        $.ajax({
+            url: "/Analytics/GetDataFromPreviousMonth/",
+            data: { "locationId": input },
+            type: "POST",
+            success: function (result1) {
+                SetUpSmallChart(result, result1);
+            }
+        })
+    };
+
+    function SetUpSmallChart(currentResult, previousResult) {
+        var ctxSmall = document.getElementById('SmallChart').getContext('2d');
+
+            var smallChart = new Chart(ctxSmall, {
+                type: 'line',
+                data: {
+                    labels: ['@glossary[18]', '@glossary[19]', '@glossary[20]', '@glossary[21]', '@glossary[22]'],
+                    datasets: [{
+                        label: '@glossary[37]',
+                        borderColor: '#53BE2D',
+                        data: currentResult
+                    }, {
+                        label: '@glossary[38]',
+                        borderColor: '#2D67BE',
+                        data: previousResult
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+
+    };
+
+    // Favourite statistics function
+    function GetAmountOfFavourite(input) {
+        $.ajax({
+            url: "/Analytics/GetAmountOfFavourites/",
+            data: { "locationId": input },
+            type: "POST",
+            success: function (result) {
+                $("#AmountOfFavourite").html(result);
+            }
+        })
+    };
+
+    // Current amount of people statistics function
+    function GetCurrentAmountOfPeople(input) {
+        $.ajax({
+            url: "/Analytics/GetCurrectAmountOfPeople/",
+            data: { "locationId": input },
+            type: "POST",
+            success: function (result) {
+                $("#CurrentAmountPeople").html(result);
+            }
+        })
+    };
+
+    // Current amount of people statistics function
+    function GetMaxAmountOfPeople(input) {
+        $.ajax({
+            url: "/Analytics/GetMaxAmountOfPeople/",
+            data: { "locationId": input },
+            type: "POST",
+            success: function (result) {
+                $("#MaxAmountPeople").html(result);
+            }
+        })
+    };
+
+    $(document).ready(function () {
+        @{int i = -1;
+        if(Model != null)
+        {
+            i = Model.LocationId;
+        }}
+        var input = @i;
+        if (input >= 0) {
+            GetAmountOfFavourite(input);
+            GetCurrentAmountOfPeople(input);
+            GetMaxAmountOfPeople(input);
+            GetHourlyAverageData(input);
+            GetCurrentMonthData(input);
+        }
+    })
+
+
+</script>

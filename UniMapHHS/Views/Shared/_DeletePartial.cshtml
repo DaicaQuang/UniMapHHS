@@ -1,0 +1,34 @@
+﻿@{Dictionary<int, string> glossary = ViewBag.glossary; }
+<div class="overlay_menu_childList" id="overlay_menu_Delete">
+    <div class="sidebar_title">
+        <em class="fas fa-arrow-left" onclick="overlayExtend('overlay_menu_Delete')"></em>
+        <span>@glossary[52]</span>
+    </div>
+    <div id="menuItemList">
+        <a class="menu_item firstMenuItem" id="deleteButton">
+            @glossary[53]
+        </a>
+    </div>
+</div>
+
+<script>
+    $("#deleteButton").click(function (event) {
+        var r = confirm('@glossary[56]');
+        if (r == true) {
+            $.ajax({
+                url: "/Home/DeleteAccount/",
+                type: "POST",
+                success: function (result) {
+                    if (result == false) {
+                        window.location = '/login';
+                        alert('@glossary[54]');
+                    } else {
+                        alert('@glossary[55]');
+                    }
+                }
+            })
+        } else {
+            event.preventDefault();
+        }
+    });
+</script>

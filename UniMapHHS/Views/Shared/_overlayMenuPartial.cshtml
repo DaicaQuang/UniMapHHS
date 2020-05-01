@@ -1,0 +1,38 @@
+﻿@{Dictionary<int, string> glossary = ViewBag.glossary; }
+<div id="overlay_menu">
+    <div class="menu_item" onclick="overlayExtend('overlay_menu_Feedback')">
+        @glossary[14]
+    </div>
+
+    <div class="menu_item" onclick="overlayExtend('overlay_menu_Languages')">
+        @glossary[9]
+        @{string lang = ViewBag.lang;}
+        @if (lang == "NL")
+        {
+            <img src="~/images/NLflag.png" alt="Dutch"/>
+        }
+        else if (lang == "SP")
+        {
+            <img src="~/images/SPflag.png" alt="Spanish"/>
+        }
+        else
+        {
+            <img src="~/images/UKflag.png" alt="English"/>
+        }
+    </div>
+    @if (ViewBag.UserRole != "Guest")
+    {
+        <div class="menu_item" onclick="overlayExtend('overlay_menu_Delete')">
+            @glossary[52]
+        </div>
+    }
+    <div class="menu_footer">
+        @glossary[15]
+    </div>
+
+
+    <!--Overlays here, should always stay at the bottom-->
+    <partial name="../Shared/_LanguagesPartial.cshtml" />
+    <partial name="../Shared/_FeedbackPartial.cshtml" />
+    <partial name="../Shared/_DeletePartial.cshtml" />
+</div> 

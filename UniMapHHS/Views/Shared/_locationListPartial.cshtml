@@ -1,0 +1,15 @@
+﻿@model List<Location>
+@{Dictionary<int, string> glossary = ViewBag.glossary; }
+<div id="overlay_LocationList">
+    <div class="sidebar_title">
+
+        <em class="fas fa-arrow-left" onclick="overlayExtend('overlay_LocationList')"></em>
+
+        <span>@glossary[10]</span>
+    </div>
+
+    <div class="sidebar_container" id="style-3">
+        <div class="sidebar_list" id="testje">
+        </div>
+    </div>
+</div>

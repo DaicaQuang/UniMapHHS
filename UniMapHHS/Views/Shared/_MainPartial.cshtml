@@ -1,0 +1,104 @@
+﻿@model UniMapHHS.Models.Category
+<div class="main">
+    <partial name="../Shared/_HeaderPartial.cshtml" />
+    @{List<UniMapHHS.Models.MapModel> ModelList = ViewBag.ModelList;}
+    @for (var i = 0; i < ModelList.Count; i++)
+    {
+        if (ModelList[i].MapId == "School")
+        {
+            <div class="map" id="@ModelList[i].MapId">
+
+
+                <img src="@ModelList[i].MapLink" alt="HHSMap" usemap="#@ModelList[i].MapId-map">
+                <map name="@ModelList[i].MapId-map">
+                    @for (var j = 0; j < ModelList[i].AreaList.Count; j++)
+                    {
+                        <area target="" alt="@ModelList[i].AreaList[j].AreaAlt" title="@ModelList[i].AreaList[j].AreaTitle" onclick="changeMap('@ModelList[i].AreaList[j].DestinationId', '@ModelList[i].MapId', '@ModelList[i].AreaList[j].AreaTitle')" ; coords="@string.Join(", ", ModelList[i].AreaList[j].AreaCoords)" shape="poly">
+                    }
+                </map>
+            </div>
+        }
+        else
+        {
+            <div class="map hidden" id="@ModelList[i].MapId">
+
+                <img src="@ModelList[i].MapLink" alt="HHSMap" usemap="#@ModelList[i].MapId-map">
+                <map name="@ModelList[i].MapId-map">
+                    @for (var j = 0; j < ModelList[i].AreaList.Count; j++)
+                    {
+                        <area target="" alt="@ModelList[i].AreaList[j].AreaAlt" title="@ModelList[i].AreaList[j].AreaTitle" onclick="openLocation('@ModelList[i].AreaList[j].CategoryID', '@ModelList[i].AreaList[j].LocationID');" coords="@string.Join(", ", ModelList[i].AreaList[j].AreaCoords)" shape="poly">
+                    }
+                </map>
+
+                <a class="backButton" href="@Url.Action("Index")"><i class="fas fa-arrow-circle-left"></i></a>
+
+                <div class="floor-building-interaction">
+                    <div class="buildingFloor-dropdown">
+                        <select id="floorDropdown_@ModelList[i].MapId" onchange="checkSelectedValue(floorDropdown_@ModelList[i].MapId, '@ModelList[i].MapId', '@ModelList[i].BuildingName')">
+                        </select>
+                    </div>
+                    <div class="changeFloorButtons">
+                        <div>
+                            <button type="button" class="plus" onclick="increaseFloorBtn('floorDropdown_@ModelList[i].MapId')"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <div>
+                            <button type="button" class="minus" onclick="decreaseFloorBtn('floorDropdown_@ModelList[i].MapId')"><i class="fas fa-minus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<script>
+
+    function checkSelectedValue(dropdownElement, originId, buildingName) {
+        var opt = dropdownElement.options[dropdownElement.selectedIndex].value;
+        var buildingKey = originId.slice(0, -1);
+        var DestId = buildingKey + opt;
+        changeMap(DestId, originId, buildingName);
+    }
+
+    function loadDropdown(buildingName, destId) {
+        $.ajax({
+            url: "/Home/GetFloors/",
+            data: { "building": buildingName },
+            type: "POST",
+            success: function (result) {
+                var i = 0;
+                var html;
+                var dropdown = "floorDropdown_" + destId;
+                var floornumber = destId.slice(2, 3);
+
+                $.each(result, function () {
+                    if (i == floornumber) {
+                        html = html + '<option selected id="floor" value="' + i + '">' + i + '</option>';
+                    } else {
+                        html = html + '<option id="floor" value="' + i + '">' + i + '</option>';
+                    }
+                    i++;
+                })
+                document.getElementById(dropdown).innerHTML = html;
+            }
+        })
+    }
+
+    function increaseFloorBtn(selectDropdown) {
+        var dropdown = document.getElementById(selectDropdown);
+        if (dropdown.options[dropdown.selectedIndex + 1] != null) {
+            dropdown.selectedIndex = dropdown.selectedIndex + 1;
+            dropdown.onchange();
+        }
+    }
+
+     function decreaseFloorBtn(selectDropdown) {
+         var dropdown = document.getElementById(selectDropdown);
+         if (dropdown.selectedIndex > 0) {
+            dropdown.selectedIndex = dropdown.selectedIndex - 1;
+            dropdown.onchange();
+        }
+    }
+
+</script>
+

@@ -1,0 +1,73 @@
+﻿@model List<Location>
+@{Dictionary<int, string> glossary = ViewBag.glossary; }
+<div class="sidebar" id="style-3">
+    <div class="sidebar_header">
+        <div class="sidebar_hamburger">
+            <div id="nav-icon3" onclick="hamburgerAnimate(this, 'overlay_menu')">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <img class="title" src="~/images/logo.png" alt="UNI.map">
+        @if (ViewBag.lang == "NL")
+        {
+            <a class="loginIcon mobileView_only" asp-controller="Login" asp-action="Index" asp-route-lang="NL"><em class="far fa-user-circle"></em></a>
+        }
+        else if (ViewBag.lang == "SP")
+        {
+            <a class="loginIcon mobileView_only" asp-controller="Login" asp-action="Index" asp-route-lang="SP"><em class="far fa-user-circle"></em></a>
+        }
+        else
+        {
+            <a class="loginIcon mobileView_only" asp-controller="Login" asp-action="Index" asp-route-lang="EN"><em class="far fa-user-circle"></em></a>
+        }
+
+        <!--changes this icon to:-->
+        <!--"fas fa-user-check"-->
+        <!--on log in-->
+
+    </div>
+    <div class="sidebar_scrollWrapper" id="style-3">
+        <div class="sidebar_searchbar mobileView_only">
+            <div class="header_searchBar">
+                <input class="header_searchInput" placeholder="@glossary[4]" />
+                <div class="header_searchIcon"><em class="fas fa-search"></em></div>
+            </div>
+        </div>
+        <div class="sidebar_title">
+            <span>@glossary[2]</span>
+        </div>
+        <div class="sidebar_container" id="style-3">
+            <div class="sidebar_list">
+                @{UniMapHHS.Models.Category[] categoryList = ViewBag.CategoryList;}
+                @for (var i = 0; i < categoryList.Length; i++)
+                {
+                    <partial name="../Shared/_CategoryItemPartial.cshtml" model="@categoryList[i]" />
+                }
+            </div>
+        </div>
+        @if (ViewBag.UserRole != "Guest" && ViewBag.UserRole != null)
+        {
+
+            <div class="sidebar_title">
+
+                <span>@glossary[3]</span>
+            </div>
+
+            <div class="sidebar_container" id="style-3">
+                <div class="sidebar_list" id="testje2">
+
+
+                </div>
+            </div>
+        }
+        </div>
+    <!--this partial needs to stay here-->
+    <partial name="../Shared/_LocationListPartial.cshtml" />
+
+    <!--this partial needs to stay at the bottom!-->
+    <partial name="../Shared/_overlayMenuPartial.cshtml" />
+</div>
+

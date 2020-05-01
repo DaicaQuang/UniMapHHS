@@ -1,0 +1,57 @@
+﻿@{Dictionary<int, string> glossary = ViewBag.glossary; }
+<div class="overlay_menu_childList" id="overlay_menu_Languages">
+    <div class="sidebar_title">
+        <em class="fas fa-arrow-left" onclick="overlayExtend('overlay_menu_Languages')"></em>
+        <span>@glossary[9]</span>
+    </div>
+    <div id="menuItemList">
+        @{string lang = ViewBag.lang;}
+        @if (lang == "EN")
+        {
+            <a class="menu_item menu_item_selected firstMenuItem" onclick="selectMenuItem(this)">
+                <!--I know firstMenuItem is not clean code but I have no clue on how to fix this-->
+                English
+                <img src="~/images/UKflag.png" alt="English" />
+            </a>
+        }
+        else
+        {
+            <a class="menu_item firstMenuItem" onclick="selectMenuItem(this)" href="?lang=EN">
+                <!--I know firstMenuItem is not clean code but I have no clue on how to fix this-->
+                English
+                <img src="~/images/UKflag.png" alt="English"/>
+            </a>
+        }
+        @if (lang == "NL")
+        {
+            <a class="menu_item menu_item_selected" onclick="selectMenuItem(this)">
+                Nederlands
+                <img src="~/images/NLflag.png" alt="Dutch"/>
+            </a>
+        }
+        else
+        {
+            <a class="menu_item" onclick="selectMenuItem(this)" href="?lang=NL">
+                Nederlands
+                <img src="~/images/NLflag.png" alt="Dutch"/>
+            </a>
+        }
+        @if (lang == "SP")
+        {
+            <a class="menu_item menu_item_selected" onclick="selectMenuItem(this)">
+                Español
+                <img src="~/images/SPflag.png" alt="Spanish"/>
+            </a>
+        }
+        else
+        {
+            <a class="menu_item" onclick="selectMenuItem(this)" href="?lang=SP">
+                Español
+                <img src="~/images/SPflag.png" alt="Spanish"/>
+            </a>
+        }
+
+
+    </div>
+</div>
+

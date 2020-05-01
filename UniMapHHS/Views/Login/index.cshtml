@@ -1,0 +1,108 @@
+﻿@{Dictionary<int, string> glossary = ViewBag.glossary; }
+<div id="fullPage">
+    <div id="brandingWrapper" class="float">
+        <div id="branding" class="illustrationClass"></div>
+    </div>
+    <div id="contentWrapper" class="float">
+        <div id="content">
+            <div id="header">
+                <img class="logoImage" src="~/images/Login/logo.jpg" alt="@glossary[40]">
+            </div>
+            <div id="workArea">
+                <div id="authArea" class="groupMargin">
+                    <div id="loginArea">
+                        <div id="loginMessage" class="groupMargin">@glossary[41]</div>
+
+                        <form method="post" id="loginForm" autocomplete="off" novalidate="novalidate">
+                            <div id="error" class="fieldMargin error smallText" style="display: none;">
+                                <label id="errorText" for=""></label>
+                            </div>
+
+                            <div id="formsAuthenticationArea">
+                                <div id="userNameArea">
+                                    <input id="userNameInput" name="UserName" type="email" value="" tabindex="1" class="text fullWidth" spellcheck="false" placeholder="@glossary[42]" autocomplete="off">
+                                </div>
+
+                                <div id="passwordArea">
+                                    <input id="passwordInput" Onkeypress="OnEnter(event)" name="Password" type="password" tabindex="2" class="text fullWidth" placeholder="@glossary[43]" autocomplete="off">
+                                </div>
+                                <div id="submissionArea" class="submitMargin" onclick="Login()">
+                                    <span id="submitButton" class="submit" tabindex="4">@glossary[44]</span>
+                                </div>
+                            </div>
+                            <input id="optionForms" type="hidden" name="AuthMethod" value="FormsAuthentication">
+                        </form>
+
+
+
+                        <div id="introduction" class="groupMargin">
+                            <table><caption></caption><tbody><tr><th scope="col"></th></tr><tr><td>@glossary[45]:</td><td>12345678@student.hhs.nl</td></tr><tr><td>@glossary[46]:&nbsp;</td><td>@glossary[47]&#64;hhs.nl</td></tr></tbody></table>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div id="footerPlaceholder"></div>
+        </div>
+        <div id="footer">
+            <div id="footerLinks" class="floatReverse">
+                <div><span id="copyright">© 2020 Uni.Map</span><a id="helpDesk" class="pageLink" href="https://webforms.hhs.nl/public/password/wijzig-studenten-wachtwoord.php">@glossary[48]</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function Login() {
+        var username = document.getElementById("userNameInput").value;
+        var pass = document.getElementById("passwordInput").value;
+        if (username != "" && pass != "") {
+            try {
+                $.ajax({
+                    url: "/Login/CheckUserexistence/",
+                    data: { "username": username, "password": pass },
+                    type: "POST",
+                    success: function (result) {
+                        console.log(result + "A ")
+                        if (result != "ERROR") {
+                            if (result != "") {
+                                window.location.href = "/Home?lang=" + result;
+                            } else {
+                                window.location.href = "/Home";
+                            }
+                        } else {
+                            er("@glossary[49]");
+                        }
+                    },
+                    fail: function (er) {
+                        er(er);
+                    }
+                })
+            } catch (er) {
+                er(er);
+            }
+        } else {
+            er("@glossary[50]");
+        }
+    };
+
+    function er(er) {
+        document.getElementById("error").style = "";
+        if (er != null && er != "") {
+            document.getElementById("errorText").innerHTML = er;
+        } else {
+            document.getElementById("errorText").innerHTML = "@glossary[51]";
+        }
+    }
+
+
+
+    function OnEnter(event) {
+        if (event.keyCode === 13) {
+            Login();
+       }
+   }
+</script>

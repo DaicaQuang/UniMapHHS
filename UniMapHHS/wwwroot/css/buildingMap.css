@@ -1,0 +1,34 @@
+﻿.BuildingImage {
+    width: 100%;
+}
+.backButton
+{
+    position: absolute;
+    top: 9%;
+    left: 310px;
+    font-size: 2em;
+    color: #9ea700;
+}
+.floor-building-interaction 
+{
+    position: absolute;
+    right: 1%;   
+    Top: 9%;
+}
+.changeFloorButtons 
+{
+    margin-top: 15%;
+}
+.buildingFloor-dropdown 
+{
+    bottom: 1%;
+}
+.plus
+{
+    width: 30px;
+}
+.minus
+{
+    width: 30px;
+}
+
